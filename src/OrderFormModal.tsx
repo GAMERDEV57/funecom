@@ -20,7 +20,7 @@ export default function OrderFormModal({ product, isOpen, onClose, onOrderSucces
   const currentUser = useQuery(api.auth.loggedInUser); 
   const userProfile = useQuery(
     api.users.getUserProfile, 
-    currentUser ? {} : "skip" // Pass empty object if currentUser exists, else "skip"
+    currentUser ? {} : "skip"
   );
 
   const [quantity, setQuantity] = useState(1);
@@ -36,6 +36,12 @@ export default function OrderFormModal({ product, isOpen, onClose, onOrderSucces
 
   if (!isOpen) return null;
 
+  // Helper: remove extra fields from shipping address
+  const sanitizeShippingAddress = (address: any) => {
+    const { id, isDefault, ...cleanAddress } = address;
+    return cleanAddress;
+  };
+
   const handlePlaceOrder = async () => {
     if (!currentUser) {
       toast.error("You must be logged in to place an order.");
@@ -45,6 +51,7 @@ export default function OrderFormModal({ product, isOpen, onClose, onOrderSucces
       toast.error("Please select a shipping address.");
       return;
     }
+
     const selectedAddress = userProfile?.addresses?.find(addr => addr.id === selectedAddressId);
     if (!selectedAddress) {
       toast.error("Selected address not found.");
@@ -56,16 +63,7 @@ export default function OrderFormModal({ product, isOpen, onClose, onOrderSucces
       await placeOrder({
         productId: product._id,
         quantity,
-        shippingAddress: {
-          type: selectedAddress.type,
-          street: selectedAddress.street,
-          area: selectedAddress.area,
-          pincode: selectedAddress.pincode,
-          city: selectedAddress.city,
-          state: selectedAddress.state,
-          country: selectedAddress.country,
-          landmark: selectedAddress.landmark,
-        },
+        shippingAddress: sanitizeShippingAddress(selectedAddress),
         paymentMethod: "COD", 
       });
       toast.success("Order placed successfully!");
@@ -148,3 +146,4 @@ export default function OrderFormModal({ product, isOpen, onClose, onOrderSucces
     </div>
   );
 }
+
