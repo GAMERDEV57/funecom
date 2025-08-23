@@ -9,6 +9,7 @@ export const createOrder = mutation({
     productId: v.id("products"),
     quantity: v.number(),
     shippingAddress: v.object({
+      id: v.string(),
       type: v.string(),
       street: v.string(),
       area: v.string(),
@@ -17,6 +18,7 @@ export const createOrder = mutation({
       state: v.string(),
       country: v.string(),
       landmark: v.optional(v.string()),
+      isDefault: v.boolean(),
     }),
     paymentMethod: v.string(),
   },
@@ -43,6 +45,9 @@ export const createOrder = mutation({
     const codCharges = args.paymentMethod.toLowerCase() === "cod" ? (store.codCharges || 0) : 0;
     const finalTotal = subtotal + storeCharges + gstAmount + codCharges;
 
+    // Strip extra fields from shippingAddress to match orders table schema
+    const { id, isDefault, ...cleanAddress } = args.shippingAddress;
+
     // Create order with status history
     const orderId = await ctx.db.insert("orders", {
       userId,
@@ -51,7 +56,7 @@ export const createOrder = mutation({
       quantity: args.quantity,
       productPriceAtOrder: product.price,
       totalPrice: finalTotal, // Keep for backward compatibility
-      shippingAddress: args.shippingAddress,
+      shippingAddress: cleanAddress, // ✅ fixed
       paymentMethod: args.paymentMethod,
       orderStatus: "placed",
       subtotal,
@@ -276,3 +281,4 @@ export const generateInvoice = query({
     };
   },
 });
+
