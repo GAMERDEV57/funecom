@@ -9,7 +9,7 @@ export const createOrder = mutation({
     productId: v.id("products"),
     quantity: v.number(),
     shippingAddress: v.object({
-      id: v.string(),
+     id: v.optional(v.string()),
       type: v.string(),
       street: v.string(),
       area: v.string(),
@@ -18,7 +18,7 @@ export const createOrder = mutation({
       state: v.string(),
       country: v.string(),
       landmark: v.optional(v.string()),
-      isDefault: v.boolean(),
+      isDefault: v.optional(v.boolean()),
     }),
     paymentMethod: v.string(),
   },
