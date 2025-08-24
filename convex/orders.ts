@@ -40,14 +40,10 @@ export const createOrder = mutation({
     const gstApplicable = store.gstApplicable || false;
     const gstPercentage = store.gstPercentage || 18;
     const gstAmount = gstApplicable ? (subtotal * gstPercentage) / 100 : 0;
-    const codCharges =
-      args.paymentMethod.toLowerCase() === "cod"
-        ? store.codCharges || 0
-        : 0;
+    const codCharges = args.paymentMethod.toLowerCase() === "cod" ? (store.codCharges || 0) : 0;
     const finalTotal = subtotal + storeCharges + gstAmount + codCharges;
 
-    // ✅ Clean shippingAddress already matches schema now
-    const cleanAddress = args.shippingAddress;
+    // shippingAddress is already cleaned in the frontend
 
     // Create order with status history
     const orderId = await ctx.db.insert("orders", {
@@ -57,7 +53,7 @@ export const createOrder = mutation({
       quantity: args.quantity,
       productPriceAtOrder: product.price,
       totalPrice: finalTotal, // Keep for backward compatibility
-      shippingAddress: cleanAddress,
+      shippingAddress: args.shippingAddress,
       paymentMethod: args.paymentMethod,
       orderStatus: "placed",
       subtotal,
@@ -65,13 +61,11 @@ export const createOrder = mutation({
       gstAmount,
       codCharges,
       finalTotal,
-      statusHistory: [
-        {
-          status: "placed",
-          timestamp: Date.now(),
-          description: "Order has been placed successfully",
-        },
-      ],
+      statusHistory: [{
+        status: "placed",
+        timestamp: Date.now(),
+        description: "Order has been placed successfully",
+      }],
     });
 
     // Update product stock
@@ -113,8 +107,7 @@ export const updateOrderStatus = mutation({
 
     if (args.trackingId) updates.trackingId = args.trackingId;
     if (args.courierName) updates.courierName = args.courierName;
-    if (args.estimatedDeliveryTime)
-      updates.estimatedDeliveryTime = args.estimatedDeliveryTime;
+    if (args.estimatedDeliveryTime) updates.estimatedDeliveryTime = args.estimatedDeliveryTime;
 
     // Add to status history
     const currentHistory = order.statusHistory || [];
@@ -122,10 +115,9 @@ export const updateOrderStatus = mutation({
       status: args.status,
       timestamp: Date.now(),
       location: args.location,
-      description:
-        args.description || `Order status updated to ${args.status}`,
+      description: args.description || `Order status updated to ${args.status}`,
     };
-
+    
     updates.statusHistory = [...currentHistory, newHistoryEntry];
 
     await ctx.db.patch(args.orderId, updates);
@@ -149,7 +141,7 @@ export const getMyOrders = query({
       orders.map(async (order) => {
         const product = await ctx.db.get(order.productId);
         const store = await ctx.db.get(order.storeId);
-
+        
         return {
           ...order,
           productName: product?.productName || "Unknown Product",
@@ -185,7 +177,7 @@ export const getStoreOrders = query({
       orders.map(async (order) => {
         const product = await ctx.db.get(order.productId);
         const user = await ctx.db.get(order.userId);
-
+        
         return {
           ...order,
           productName: product?.productName || "Unknown Product",
@@ -245,8 +237,8 @@ export const generateInvoice = query({
 
     const product = await ctx.db.get(order.productId);
     const customer = await ctx.db.get(order.userId);
-    const signatureUrl = store?.invoiceSignatureId
-      ? await ctx.storage.getUrl(store.invoiceSignatureId)
+    const signatureUrl = store?.invoiceSignatureId 
+      ? await ctx.storage.getUrl(store.invoiceSignatureId) 
       : null;
 
     return {
@@ -274,8 +266,7 @@ export const generateInvoice = query({
         unitPrice: order.productPriceAtOrder,
       },
       pricing: {
-        subtotal:
-          order.subtotal || order.productPriceAtOrder * order.quantity,
+        subtotal: order.subtotal || (order.productPriceAtOrder * order.quantity),
         storeCharges: order.storeCharges || 0,
         gstAmount: order.gstAmount || 0,
         codCharges: order.codCharges || 0,
