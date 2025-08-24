@@ -56,10 +56,13 @@ export default function CheckoutPage({ productId, quantity, onClose, onOrderSucc
     setIsPlacingOrder(true);
     
     try {
+      // Remove extra fields from shipping address
+      const { id, isDefault, ...cleanAddress } = selectedAddress;
+      
       const result = await createOrderMutation({
         productId,
         quantity,
-        shippingAddress: selectedAddress,
+        shippingAddress: cleanAddress,
         paymentMethod,
       });
 
