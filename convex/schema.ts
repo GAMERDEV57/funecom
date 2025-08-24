@@ -87,9 +87,18 @@ const products = defineTable({
 .index("by_storeId", ["storeId"])
 .index("by_category", ["category"])
 .index("by_storeId_and_isPublished", ["storeId", "isPublished"])
-.searchIndex("search_name", { searchField: "productName", filterFields: ["storeId", "category", "isPublished"] })
-.searchIndex("search_description", { searchField: "productDescription", filterFields: ["storeId", "category", "isPublished"] })
-.searchIndex("search_tags", { searchField: "tags", filterFields: ["storeId", "isPublished"] });
+.searchIndex("search_name", {
+  searchField: "productName",
+  filterFields: ["storeId", "category", "isPublished"],
+})
+.searchIndex("search_description", {
+  searchField: "productDescription",
+  filterFields: ["storeId", "category", "isPublished"],
+})
+.searchIndex("search_tags", {
+  searchField: "tags",
+  filterFields: ["storeId", "isPublished"],
+});
 
 /**
  * ============
