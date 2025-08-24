@@ -36,7 +36,7 @@ export default function OrderFormModal({ product, isOpen, onClose, onOrderSucces
 
   if (!isOpen) return null;
 
-  // Helper: remove extra fields from shipping address
+  // ✅ remove extra fields (id, isDefault) before sending
   const sanitizeShippingAddress = (address: any) => {
     const { id, isDefault, ...cleanAddress } = address;
     return cleanAddress;
@@ -63,6 +63,7 @@ export default function OrderFormModal({ product, isOpen, onClose, onOrderSucces
       await placeOrder({
         productId: product._id,
         quantity,
+        // ✅ Clean address before saving to Convex
         shippingAddress: sanitizeShippingAddress(selectedAddress),
         paymentMethod: "COD", 
       });
@@ -146,4 +147,3 @@ export default function OrderFormModal({ product, isOpen, onClose, onOrderSucces
     </div>
   );
 }
-
