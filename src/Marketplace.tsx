@@ -25,7 +25,7 @@ export default function Marketplace({ onBuyNow, onViewProduct }: MarketplaceProp
 
   const filteredProducts = products?.filter(product => {
     const matchesSearch = product.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.productDescription.toLowerCase().includes(searchTerm.toLowerCase());
+                         (product.description || product.productDescription || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   }) || [];
@@ -153,7 +153,7 @@ export default function Marketplace({ onBuyNow, onViewProduct }: MarketplaceProp
                     {product.productName}
                   </h3>
                   <p className="text-sm text-gray-600 mb-2">by {product.storeName}</p>
-                  <p className="text-sm text-gray-600 line-clamp-2">{product.productDescription}</p>
+                  <p className="text-sm text-gray-600 line-clamp-2">{product.description || product.productDescription}</p>
                 </div>
 
                 <div className="flex items-center justify-between mb-4">
