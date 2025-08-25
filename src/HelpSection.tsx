@@ -340,7 +340,7 @@ export default function HelpSection({ onClose }: HelpSectionProps) {
             <div className="space-y-2 text-gray-700">
               <div className="flex items-center gap-2">
                 <span className="font-medium w-20">Email:</span>
-                <a href="mailto:support@funecom.com" className="text-primary hover:underline">support@funecom.com</a>
+                <a href="mailto:funmakerzoffcial@gmail.com" className="text-primary hover:underline">funmakerzoffcial@gmail.com</a>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium w-20">Phone:</span>
