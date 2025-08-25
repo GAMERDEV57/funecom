@@ -59,9 +59,9 @@ export default function App() {
           <div className="hidden md:flex items-center text-sm text-gray-600">
             <span className="mr-4">📞 +91 79752-14527</span>
             <span className="mr-4 flex items-center gap-2 text-sm text-gray-700">
-  <Instagram className="w-5 h-5 text-pink-600" />
-  funmakerz_offcial
-</span>
+              <Instagram className="w-5 h-5 text-pink-600" />
+                funmakerz_offcial
+             </span>
             <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
               Zero Platform Fees
             </span>
