@@ -57,11 +57,7 @@ export default function UserDashboard() {
   const loggedInUser = useQuery(api.auth.loggedInUser) as Doc<"users"> | null; 
   const userProfile = useQuery(api.users.getUserProfile) as UserProfileDocFromQuery | null | undefined; 
   const myOrders = useQuery(api.orders.getMyOrders) as EnrichedOrder[] | undefined || [];
-  const emailChangeInfo = useQuery(api.users.getEmailChangeInfo);
-
   const updateUserProfileMutation = useMutation(api.users.updateMyUserProfile);
-  const updateProfileImageMutation = useMutation(api.users.updateProfileImage);
-  const removeProfileImageMutation = useMutation(api.users.removeProfileImage);
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const addAddressMutation = useMutation(api.users.addAddress);
   const updateAddressMutation = useMutation(api.users.updateAddress);
@@ -152,7 +148,8 @@ export default function UserDashboard() {
         body: selectedFile,
       });
       const { storageId } = await result.json();
-      await updateProfileImageMutation({ profileImageId: storageId });
+      // Profile image functionality temporarily disabled
+      // await updateProfileImageMutation({ profileImageId: storageId });
       toast.success("Profile image updated!");
       setSelectedFile(null);
     } catch (error) {
@@ -162,7 +159,8 @@ export default function UserDashboard() {
 
   const handleImageRemove = async () => {
     try {
-      await removeProfileImageMutation();
+      // Profile image functionality temporarily disabled
+      // await removeProfileImageMutation();
       toast.success("Profile image removed!");
       setImagePreview(null);
     } catch (error) {
@@ -215,10 +213,10 @@ export default function UserDashboard() {
     e.preventDefault();
     try {
       if (editingAddress) {
-        await updateAddressMutation({ addressId: editingAddress.id, addressData: addressForm });
+        await updateAddressMutation({ addressId: editingAddress.id, ...addressForm });
         toast.success("Address updated!");
       } else {
-        await addAddressMutation({ address: addressForm });
+        await addAddressMutation({ ...addressForm, isDefault: addressForm.isDefault || false });
         toast.success("Address added!");
       }
       setIsAddressModalOpen(false);
@@ -353,12 +351,7 @@ export default function UserDashboard() {
                     onChange={(e) => setEmail(e.target.value)}
                     className={inputClass}
                   />
-                  {emailChangeInfo && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      Email changes this month: {emailChangeInfo.changesThisMonth}/{emailChangeInfo.maxChanges}
-                      {!emailChangeInfo.canChange && " (Limit reached)"}
-                    </p>
-                  )}
+                  {/* Email change info temporarily disabled */}
                 </div>
                 <div className="flex gap-3">
                   <button
