@@ -191,7 +191,7 @@ export default function Marketplace({ onBuyNow, onViewProduct }: MarketplaceProp
                         disabled={processingActions.has(`view-${product._id}`)}
                         className="flex-1 bg-gray-100 text-gray-800 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
                       >
-                        👁 View
+                         View
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -199,7 +199,7 @@ export default function Marketplace({ onBuyNow, onViewProduct }: MarketplaceProp
                         disabled={processingActions.has(`buy-${product._id}`)}
                         className="flex-1 bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
                       >
-                        🛒 Buy
+                         Buy
                       </motion.button>
                     </div>
                   </div>
